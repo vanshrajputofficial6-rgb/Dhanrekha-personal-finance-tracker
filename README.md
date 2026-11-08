@@ -34,6 +34,7 @@ A full-stack MERN application for recording income and expenses, analysing spend
 - **CSV export:** download the currently filtered transactions as a spreadsheet-ready file
 - **Responsive UI:** usable on desktop, tablet, and phone screens
 - **Consistent theming:** all colours and spacing are driven by CSS custom properties
+- **Authentication:** register and log in with JWT. Every transaction and budget belongs to its owner, so users see only their own data
 
 ## Tech Stack
 
@@ -119,6 +120,15 @@ For MongoDB Atlas, replace `MONGO_URI` with your `mongodb+srv://` connection str
 ## API Reference
 
 Base URL: `http://localhost:5000/api`
+All `/transactions`, `/summary`, and `/budgets` endpoints require a bearer token. Send it in the header `Authorization: Bearer <token>`. Requests without a valid token receive `401 Unauthorized`.
+
+### Authentication
+
+| Method | Endpoint          | Description                                         |
+| ------ | ----------------- | --------------------------------------------------- |
+| POST   | `/auth/register`  | Create an account. Returns a JWT and the user       |
+| POST   | `/auth/login`     | Log in. Returns a JWT and the user                  |
+| GET    | `/auth/me`        | Get the logged-in user. Requires `Authorization`    |
 
 ### Health
 
@@ -230,8 +240,8 @@ A unique index on `(category, month)` guarantees one budget per category per mon
 - [x] Responsive layout
 - [x] Monthly budgets with progress tracking
 - [x] CSV export
-- [ ] User authentication (JWT)
-- [ ] Per-user data isolation
+- [x] User authentication (JWT)
+- [x] Per-user data isolation
 - [ ] Automated tests (API and component)
 - [ ] Deployment configuration
 
