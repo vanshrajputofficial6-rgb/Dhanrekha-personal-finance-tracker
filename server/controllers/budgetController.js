@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Budget = require("../models/Budget");
 const Transaction = require("../models/Transaction");
 
@@ -14,10 +15,16 @@ const getBudgetStatus = async (req, res, next) => {
     const start = new Date(year, mon - 1, 1);
     const end = new Date(year, mon, 1);
 
-    const budgets = await Budget.find({ month }).lean();
+    const budgets = await Budget.find({ month, user: req.user.id }).lean();
 
     const spent = await Transaction.aggregate([
-      { $match: { type: "expense", date: { $gte: start, $lt: end } } },
+      {
+        $match: {
+          type: "expense",
+          user: new mongoose.Types.ObjectId(req.user.id),
+          date: { $gte: start, $lt: end },
+        },
+      },
       { $group: { _id: "$category", total: { $sum: "$amount" } } },
     ]);
     const spentMap = Object.fromEntries(spent.map((s) => [s._id, s.total]));
@@ -44,7 +51,8 @@ const getBudgetStatus = async (req, res, next) => {
 // GET /api/budgets?month=YYYY-MM
 const getBudgets = async (req, res, next) => {
   try {
-    const filter = req.query.month ? { month: req.query.month } : {};
+    const filter = { user: req.user.id };
+    if (req.query.month) filter.month = req.query.month;
     const budgets = await Budget.find(filter).sort({ category: 1 });
     res.json(budgets);
   } catch (error) {
@@ -58,8 +66,8 @@ const upsertBudget = async (req, res, next) => {
   try {
     const { category, month, limit } = req.body;
     const budget = await Budget.findOneAndUpdate(
-      { category, month },
-      { category, month, limit },
+      { user: req.user.id, category, month },
+      { user: req.user.id, category, month, limit },
       { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
     );
     res.json(budget);
@@ -71,7 +79,7 @@ const upsertBudget = async (req, res, next) => {
 // DELETE /api/budgets/:id
 const deleteBudget = async (req, res, next) => {
   try {
-    const budget = await Budget.findByIdAndDelete(req.params.id);
+    const budget = await Budget.findOneAndDelete({ _id: req.params.id, user: req.user.id });
     if (!budget) {
       return res.status(404).json({ message: "Budget not found" });
     }

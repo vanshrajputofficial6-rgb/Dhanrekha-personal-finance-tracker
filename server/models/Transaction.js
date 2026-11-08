@@ -18,6 +18,12 @@ const transactionSchema = new mongoose.Schema(
       required: [true, "Amount is required"],
       min: [0.01, "Amount must be greater than 0"],
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     type: {
       type: String,
       required: [true, "Type is required"],

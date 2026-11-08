@@ -1,5 +1,7 @@
 const express = require("express");
+router.use(protect);
 const router = express.Router();
+const protect = require("../middleware/auth");
 const {
   getBudgetStatus,
   getBudgets,

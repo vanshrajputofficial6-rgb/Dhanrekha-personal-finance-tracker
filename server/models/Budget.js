@@ -23,6 +23,6 @@ const budgetSchema = new mongoose.Schema(
 );
 
 // One budget per category per month
-budgetSchema.index({ category: 1, month: 1 }, { unique: true });
+budgetSchema.index({ user: 1, category: 1, month: 1 }, { unique: true });
 
 module.exports = mongoose.model("Budget", budgetSchema);

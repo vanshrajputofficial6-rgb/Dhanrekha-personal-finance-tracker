@@ -1,9 +1,11 @@
+const mongoose = require("mongoose");
 const Transaction = require("../models/Transaction");
 
 // GET /api/summary
 const getSummary = async (req, res, next) => {
   try {
     const totals = await Transaction.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(req.user.id) } },
       {
         $group: {
           _id: "$type",
@@ -29,7 +31,12 @@ const getSummary = async (req, res, next) => {
 const getCategoryBreakdown = async (req, res, next) => {
   try {
     const breakdown = await Transaction.aggregate([
-      { $match: { type: "expense" } },
+      {
+        $match: {
+          type: "expense",
+          user: new mongoose.Types.ObjectId(req.user.id),
+        },
+      },
       {
         $group: {
           _id: "$category",
