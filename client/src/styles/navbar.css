@@ -35,3 +35,17 @@
   color: var(--color-primary);
   font-weight: 600;
 }
+.navbar__links button {
+  background: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  padding: 0.35rem 0.8rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.navbar__links button:hover {
+  background: var(--color-primary-hover);
+}

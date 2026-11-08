@@ -1,7 +1,12 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
+import Login from "./pages/Login";
+import { isLoggedIn } from "./services/authService";
+
+const RequireAuth = ({ children }) =>
+  isLoggedIn() ? children : <Navigate to="/login" replace />;
 
 export default function App() {
   return (
@@ -9,8 +14,9 @@ export default function App() {
       <Navbar />
       <main className="page-container">
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<RequireAuth><Dashboard /></RequireAuth>} />
+          <Route path="/transactions" element={<RequireAuth><Transactions /></RequireAuth>} />
         </Routes>
       </main>
     </BrowserRouter>
