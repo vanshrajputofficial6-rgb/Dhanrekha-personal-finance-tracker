@@ -1,55 +1,79 @@
-<div align="center">
+# Personal Finance Tracker
 
-# 💰 Personal Finance Tracker
+A full-stack MERN application for recording income and expenses, analysing spending by category, and tracking monthly budgets. It features a responsive dashboard, transaction management with filtering, and CSV export.
 
-A full-stack MERN app for tracking income, expenses, and spending patterns, with a clean dashboard and charts.
-
-![Node](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)
-![React](https://img.shields.io/badge/React-Vite-61DAFB?logo=react&logoColor=black)
-
-</div>
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-Build-646CFF?logo=vite&logoColor=white)
 
 ---
 
-## ✨ Features
+## Table of Contents
 
-- Add, edit, view, and delete income and expense transactions
-- Summary of total income, total expenses, and current balance
-- Spending breakdown by category
-- Filter transactions by type, category, and date range
-- Input validation with clear error messages
-- Clean, teal-themed UI *(frontend in progress)*
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [API Reference](#api-reference)
+- [Data Model](#data-model)
+- [Design Decisions](#design-decisions)
+- [Roadmap](#roadmap)
+- [License](#license)
 
-## 🛠️ Tech Stack
+---
 
-| Layer     | Technology                          |
-| --------- | ----------------------------------- |
-| Frontend  | React, Vite, CSS variables          |
-| Backend   | Node.js, Express                    |
-| Database  | MongoDB with Mongoose               |
-| Tooling   | Nodemon, dotenv, CORS, Postman      |
+## Features
 
-## 📁 Project Structure
+- **Transactions:** create, read, update, and delete income and expense records, with server-side validation
+- **Filtering:** narrow the list by type, category, and date range
+- **Dashboard:** total income, total expenses, and balance, plus a spending-by-category chart
+- **Monthly budgets:** set a limit per category for each month, with progress tracking and over-budget alerts
+- **CSV export:** download the currently filtered transactions as a spreadsheet-ready file
+- **Responsive UI:** usable on desktop, tablet, and phone screens
+- **Consistent theming:** all colours and spacing are driven by CSS custom properties
+
+## Tech Stack
+
+| Layer      | Technology                                                        |
+| ---------- | ----------------------------------------------------------------- |
+| Frontend   | React 18, Vite, React Router, Axios, Recharts                     |
+| Backend    | Node.js, Express 4                                                |
+| Database   | MongoDB with Mongoose ODM                                         |
+| Styling    | Plain CSS with custom properties, no UI framework                 |
+| Dev tools  | Nodemon, dotenv, CORS, Postman (API testing)                      |
+
+## Architecture
+
+The project is split into two independently runnable applications.
 
 ```
 personal-finance-tracker/
-├── client/          # React frontend (Vite)
-└── server/
-    ├── config/      # Database connection
-    ├── controllers/ # Request handlers
-    ├── middleware/  # Error handling
-    ├── models/      # Mongoose schemas
-    ├── routes/      # API routes
-    └── index.js     # Server entry point
+├── client/                     # React SPA (Vite)
+│   └── src/
+│       ├── components/         # Reusable UI: forms, lists, cards, filters
+│       ├── pages/              # Route-level screens: Dashboard, Transactions
+│       ├── services/           # Axios instance and API call functions
+│       ├── styles/             # Theme variables and component CSS
+│       └── utils/              # Helpers such as CSV export
+└── server/                     # Express REST API
+    ├── config/                 # Database connection
+    ├── controllers/            # Request handling and business logic
+    ├── middleware/             # Centralised error handling
+    ├── models/                 # Mongoose schemas
+    ├── routes/                 # Route definitions per resource
+    └── index.js                # Application entry point
 ```
 
-## 🚀 Getting Started
+**Request flow:** a page calls a function in `services/`, which sends an HTTP request through the shared Axios instance. The Express route forwards it to a controller, which validates input through the Mongoose schema and returns JSON. Errors from any layer pass through one error handler, so the client always receives a `{ message }` payload.
+
+## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or later)
+- [Node.js](https://nodejs.org/) 18 or later
 - [MongoDB](https://www.mongodb.com/) running locally, or a MongoDB Atlas connection string
 
 ### 1. Clone the repository
@@ -59,89 +83,162 @@ git clone https://github.com/vanshrajputofficial6-rgb/personal-finance-tracker.g
 cd personal-finance-tracker
 ```
 
-### 2. Set up the backend
+### 2. Start the API
 
 ```bash
 cd server
 npm install
+npm run dev
 ```
 
-Create a `.env` file inside `server/`:
+The API listens on `http://localhost:5000`.
+
+### 3. Start the client
+
+In a second terminal:
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+The app is served at `http://localhost:5173`.
+
+## Environment Variables
+
+Create `server/.env`:
 
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/finance-tracker
 ```
 
-Start the server:
+For MongoDB Atlas, replace `MONGO_URI` with your `mongodb+srv://` connection string. The `.env` file is git-ignored and must never be committed.
 
-```bash
-npm run dev
-```
+## API Reference
 
-### 3. Set up the frontend
+Base URL: `http://localhost:5000/api`
 
-```bash
-cd ../client
-npm install
-npm run dev
-```
+### Health
 
-The app runs at `http://localhost:5173` and the API at `http://localhost:5000`.
+| Method | Endpoint  | Description        |
+| ------ | --------- | ------------------ |
+| GET    | `/health` | Service status     |
 
-## 🔌 API Endpoints
+### Transactions
 
-| Method | Endpoint                          | Description                          |
-| ------ | --------------------------------- | ------------------------------------ |
-| GET    | `/api/health`                     | Health check                         |
-| GET    | `/api/transactions`               | List transactions (supports filters) |
-| GET    | `/api/transactions/:id`           | Get one transaction                  |
-| POST   | `/api/transactions`               | Create a transaction                 |
-| PUT    | `/api/transactions/:id`           | Update a transaction                 |
-| DELETE | `/api/transactions/:id`           | Delete a transaction                 |
-| GET    | `/api/summary`                    | Total income, expenses, and balance  |
-| GET    | `/api/summary/by-category`        | Expense totals grouped by category   |
+| Method | Endpoint            | Description                                      |
+| ------ | ------------------- | ------------------------------------------------ |
+| GET    | `/transactions`     | List transactions. Query: `type`, `category`, `startDate`, `endDate` |
+| GET    | `/transactions/:id` | Get one transaction                              |
+| POST   | `/transactions`     | Create a transaction (`201 Created`)             |
+| PUT    | `/transactions/:id` | Update a transaction                             |
+| DELETE | `/transactions/:id` | Delete a transaction                             |
 
-**Query filters for `GET /api/transactions`:** `type`, `category`, `startDate`, `endDate`
+### Summary
 
-**Example request body:**
+| Method | Endpoint                   | Description                                  |
+| ------ | -------------------------- | -------------------------------------------- |
+| GET    | `/summary`                 | Total income, total expenses, and balance    |
+| GET    | `/summary/by-category`     | Expense totals and counts grouped by category |
 
-```json
+### Budgets
+
+| Method | Endpoint             | Description                                                        |
+| ------ | -------------------- | ------------------------------------------------------------------ |
+| GET    | `/budgets`           | List budgets. Optional query: `month` (`YYYY-MM`)                  |
+| GET    | `/budgets/status`    | Budgets for a month with spent, remaining, percent, and over flag. Requires `month` |
+| PUT    | `/budgets`           | Create or update the budget for a category and month (upsert)      |
+| DELETE | `/budgets/:id`       | Delete a budget                                                    |
+
+### Example: create a transaction
+
+```http
+POST /api/transactions
+Content-Type: application/json
+
 {
   "amount": 250,
   "type": "expense",
   "category": "Food",
+  "date": "2026-11-08",
   "description": "Lunch"
 }
 ```
 
-**Valid categories:** Food, Transport, Shopping, Bills, Entertainment, Health, Salary, Other
+```json
+{
+  "_id": "6aef28adc6cbe34a76da65e7",
+  "amount": 250,
+  "type": "expense",
+  "category": "Food",
+  "date": "2026-11-08T00:00:00.000Z",
+  "description": "Lunch",
+  "createdAt": "2026-11-08T10:20:00.000Z",
+  "updatedAt": "2026-11-08T10:20:00.000Z",
+  "__v": 0
+}
+```
 
-## 🗺️ Roadmap
+### Errors
 
-- [x] Backend API with validation and error handling
-- [x] Summary and category endpoints
-- [x] Frontend foundation with theme and layout
-- [x] Dashboard with charts
-- [x] Transactions UI (add, edit, delete, filter)
-- [ ] Monthly budgets
-- [ ] CSV export
+Validation and server errors return a JSON body with a `message` field:
+
+```json
+{ "message": "Amount must be greater than 0" }
+```
+
+## Data Model
+
+**Transaction**
+
+| Field         | Type     | Rules                                              |
+| ------------- | -------- | -------------------------------------------------- |
+| `amount`      | Number   | Required, minimum 0.01                             |
+| `type`        | String   | Required, `income` or `expense`                    |
+| `category`    | String   | Required, one of the fixed category list           |
+| `date`        | Date     | Required, defaults to now                          |
+| `description` | String   | Optional, max 200 characters                       |
+
+**Budget**
+
+| Field      | Type   | Rules                                                 |
+| ---------- | ------ | ----------------------------------------------------- |
+| `category` | String | Required, same fixed category list                    |
+| `month`    | String | Required, `YYYY-MM` format                            |
+| `limit`    | Number | Required, minimum 1                                   |
+
+A unique index on `(category, month)` guarantees one budget per category per month.
+
+## Design Decisions
+
+- **Amounts are always positive.** Direction is stored in `type`, which keeps aggregation simple and avoids sign-handling bugs.
+- **Fixed category list.** Categories are defined once in the model and reused by the chart and budget logic. Custom categories are a deliberate future extension, since they would need their own collection.
+- **Aggregation happens in MongoDB.** Totals and category breakdowns use the aggregation pipeline rather than loading every record into Node.
+- **Centralised error handling.** Controllers pass errors to one middleware, so response formats stay consistent.
+- **Thin client service layer.** Components never call Axios directly. All HTTP calls live in `services/`, and an interceptor converts server errors into readable messages.
+- **Theme through CSS custom properties.** Colours live in one `:root` block, so the palette can change without touching component styles.
+
+## Roadmap
+
+- [x] REST API with validation and error handling
+- [x] Summary and category aggregation endpoints
+- [x] React frontend with routing and theme
+- [x] Dashboard with summary cards and category chart
+- [x] Transaction management with filtering
+- [x] Responsive layout
+- [x] Monthly budgets with progress tracking
+- [x] CSV export
 - [ ] User authentication (JWT)
+- [ ] Per-user data isolation
+- [ ] Automated tests (API and component)
+- [ ] Deployment configuration
 
-## 🎨 Theme
+## License
 
-| Role       | Color     |
-| ---------- | --------- |
-| Primary    | `#0F766E` |
-| Accent     | `#5EEAD4` |
-| Background | `#F0FDFA` |
-
-## 📄 License
-
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-<div align="center">
-Made with ❤️ by <a href="https://github.com/vanshrajputofficial6-rgb">Vansh Rajput</a>
-</div>
+**Author:** Vansh Rajput · [GitHub](https://github.com/vanshrajputofficial6-rgb)
