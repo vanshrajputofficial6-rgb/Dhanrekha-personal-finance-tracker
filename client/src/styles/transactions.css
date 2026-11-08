@@ -157,3 +157,23 @@
   color: var(--color-text);
   background: #FFFFFF;
 }
+@media (max-width: 640px) {
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-bar label {
+    display: grid;
+    justify-items: stretch;
+    width: 100%;
+  }
+
+  .filter-bar select {
+    width: 100%;
+  }
+
+  .filter-bar .button--ghost {
+    align-self: flex-start;
+  }
+}
