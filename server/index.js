@@ -5,7 +5,7 @@ const connectDB = require("./config/db");
 const transactionRoutes = require("./routes/transactionRoutes");
 const errorHandler = require("./middleware/errorHandler");
 const summaryRoutes = require("./routes/summaryRoutes");
-const budgetRoutes = require("./routes/budgetRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(express.json());
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/summary", summaryRoutes);
-app.use("/api/budgets", budgetRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
