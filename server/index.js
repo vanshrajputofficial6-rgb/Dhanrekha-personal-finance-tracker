@@ -6,6 +6,7 @@ const transactionRoutes = require("./routes/transactionRoutes");
 const errorHandler = require("./middleware/errorHandler");
 const summaryRoutes = require("./routes/summaryRoutes");
 const authRoutes = require("./routes/authRoutes");
+const budgetRoutes = require("./routes/budgetRoutes");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/summary", summaryRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/budgets", budgetRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });

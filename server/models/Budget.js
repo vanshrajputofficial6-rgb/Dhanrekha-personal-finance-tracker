@@ -3,6 +3,12 @@ const { CATEGORIES } = require("./Transaction");
 
 const budgetSchema = new mongoose.Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     category: {
       type: String,
       required: [true, "Category is required"],
@@ -22,7 +28,7 @@ const budgetSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// One budget per category per month
+// One budget per user, per category, per month
 budgetSchema.index({ user: 1, category: 1, month: 1 }, { unique: true });
 
 module.exports = mongoose.model("Budget", budgetSchema);
