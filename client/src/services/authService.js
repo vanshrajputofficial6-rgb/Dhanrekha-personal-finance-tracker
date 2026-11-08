@@ -20,3 +20,9 @@ export const logout = () => {
 };
 
 export const isLoggedIn = () => Boolean(localStorage.getItem("token"));
+
+export const forgotPassword = (email) =>
+  api.post("/auth/forgot-password", { email }).then((res) => res.data);
+
+export const resetPassword = (token, password) =>
+  api.post(`/auth/reset-password/${token}`, { password }).then((res) => res.data);

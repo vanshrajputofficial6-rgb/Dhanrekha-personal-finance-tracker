@@ -87,6 +87,11 @@ export default function Login() {
           {mode === "login" ? "Register" : "Log in"}
         </button>
       </p>
+      {mode === "login" && (
+        <p className="status-text">
+            <a href="/forgot-password">Forgot password?</a>
+        </p>
+)}
     </form>
   );
 }
