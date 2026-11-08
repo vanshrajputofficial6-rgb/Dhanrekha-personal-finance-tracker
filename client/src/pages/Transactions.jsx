@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import TransactionForm from "../components/TransactionForm";
 import TransactionList from "../components/TransactionList";
 import TransactionFilters from "../components/TransactionFilters";
+import exportCsv from "../utils/exportCsv";
 import {
   getTransactions,
   createTransaction,
@@ -68,14 +69,26 @@ export default function Transactions() {
 
     {error && <p className="status-text status-text--error">{error}</p>}
 
-    {loading ? (
-      <p className="status-text">Loading transactions...</p>
-    ) : (
-      <TransactionList
-        transactions={transactions}
-        onEdit={setEditing}
-        onDelete={handleDelete}
-      />
-    )}
-  </>
-)}
+         <div className="export-bar">
+        <button
+          type="button"
+          className="button--ghost"
+          onClick={() => exportCsv(transactions, "transactions.csv")}
+          disabled={transactions.length === 0}
+        >
+          Download CSV
+        </button>
+      </div>
+
+      {loading ? (
+        <p className="status-text">Loading transactions...</p>
+      ) : (
+        <TransactionList
+          transactions={transactions}
+          onEdit={setEditing}
+          onDelete={handleDelete}
+        />
+      )}
+    </>
+  );
+}
