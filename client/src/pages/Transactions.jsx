@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import TransactionForm from "../components/TransactionForm";
 import TransactionList from "../components/TransactionList";
+import TransactionFilters from "../components/TransactionFilters";
 import {
   getTransactions,
   createTransaction,
@@ -13,18 +14,22 @@ export default function Transactions() {
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState({ type: "", category: "" });
 
   const loadTransactions = useCallback(async () => {
-    try {
-      setError("");
-      const data = await getTransactions();
-      setTransactions(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  try {
+    setError("");
+    const params = {};
+    if (filters.type) params.type = filters.type;
+    if (filters.category) params.category = filters.category;
+    const data = await getTransactions(params);
+    setTransactions(data);
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+}, [filters]);
 
   useEffect(() => {
     loadTransactions();
@@ -51,25 +56,26 @@ export default function Transactions() {
     }
   };
 
-  return (
-    <>
-      <TransactionForm
-        onSubmit={handleSubmit}
-        editing={editing}
-        onCancel={() => setEditing(null)}
+ return (
+  <>
+    <TransactionForm
+      onSubmit={handleSubmit}
+      editing={editing}
+      onCancel={() => setEditing(null)}
+    />
+
+    <TransactionFilters filters={filters} onChange={setFilters} />
+
+    {error && <p className="status-text status-text--error">{error}</p>}
+
+    {loading ? (
+      <p className="status-text">Loading transactions...</p>
+    ) : (
+      <TransactionList
+        transactions={transactions}
+        onEdit={setEditing}
+        onDelete={handleDelete}
       />
-
-      {error && <p className="status-text status-text--error">{error}</p>}
-
-      {loading ? (
-        <p className="status-text">Loading transactions...</p>
-      ) : (
-        <TransactionList
-          transactions={transactions}
-          onEdit={setEditing}
-          onDelete={handleDelete}
-        />
-      )}
-    </>
-  );
-}
+    )}
+  </>
+)}
