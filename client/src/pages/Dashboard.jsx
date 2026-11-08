@@ -9,18 +9,31 @@ import {
   CartesianGrid,
 } from "recharts";
 import SummaryCard from "../components/SummaryCard";
+import BudgetProgress from "../components/BudgetProgress";
 import {
   getSummary,
   getCategoryBreakdown,
+  getBudgetStatus,
+  upsertBudget,
 } from "../services/transactionService";
+
+const BUDGET_CATEGORIES = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Health", "Other"];
 
 export default function Dashboard() {
   const [summary, setSummary] = useState(null);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [budgets, setBudgets] = useState([]);
+  const [budgetForm, setBudgetForm] = useState({ category: "Food", limit: "" });
+  const currentMonth = new Date().toISOString().slice(0, 7);
+
+  const loadBudgets = () =>
+    getBudgetStatus(currentMonth).then(setBudgets).catch(() => {});
 
   useEffect(() => {
+    loadBudgets();
+
     let cancelled = false;
 
     Promise.all([getSummary(), getCategoryBreakdown()])
@@ -40,6 +53,18 @@ export default function Dashboard() {
       cancelled = true;
     };
   }, []);
+
+  const handleBudgetSave = async (e) => {
+    e.preventDefault();
+    if (!budgetForm.limit) return;
+    await upsertBudget({
+      category: budgetForm.category,
+      month: currentMonth,
+      limit: Number(budgetForm.limit),
+    });
+    setBudgetForm({ ...budgetForm, limit: "" });
+    loadBudgets();
+  };
 
   if (loading) return <p className="status-text">Loading dashboard...</p>;
   if (error) return <p className="status-text status-text--error">{error}</p>;
@@ -67,6 +92,39 @@ export default function Dashboard() {
             </BarChart>
           </ResponsiveContainer>
         )}
+      </section>
+
+      <section className="budget-card">
+        <h3>Monthly Budgets</h3>
+        {budgets.length === 0 && (
+          <p className="status-text">No budgets set for this month yet.</p>
+        )}
+        {budgets.map((b) => (
+          <BudgetProgress key={b._id} item={b} />
+        ))}
+        <form className="budget-form" onSubmit={handleBudgetSave}>
+          <label>
+            Category
+            <select
+              value={budgetForm.category}
+              onChange={(e) => setBudgetForm({ ...budgetForm, category: e.target.value })}
+            >
+              {BUDGET_CATEGORIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Monthly limit (₹)
+            <input
+              type="number"
+              min="1"
+              value={budgetForm.limit}
+              onChange={(e) => setBudgetForm({ ...budgetForm, limit: e.target.value })}
+            />
+          </label>
+          <button type="submit">Set budget</button>
+        </form>
       </section>
     </>
   );

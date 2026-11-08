@@ -17,3 +17,9 @@ export const getSummary = () =>
 
 export const getCategoryBreakdown = () =>
   api.get("/summary/by-category").then((res) => res.data);
+
+export const getBudgetStatus = (month) =>
+  api.get("/budgets/status", { params: { month } }).then((res) => res.data);
+
+export const upsertBudget = (data) =>
+  api.put("/budgets", data).then((res) => res.data);
