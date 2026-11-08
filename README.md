@@ -121,9 +121,9 @@ The app runs at `http://localhost:5173` and the API at `http://localhost:5000`.
 
 - [x] Backend API with validation and error handling
 - [x] Summary and category endpoints
-- [ ] Frontend foundation with theme and layout
-- [ ] Dashboard with charts
-- [ ] Transactions UI (add, edit, delete, filter)
+- [x] Frontend foundation with theme and layout
+- [x] Dashboard with charts
+- [x] Transactions UI (add, edit, delete, filter)
 - [ ] Monthly budgets
 - [ ] CSV export
 - [ ] User authentication (JWT)
