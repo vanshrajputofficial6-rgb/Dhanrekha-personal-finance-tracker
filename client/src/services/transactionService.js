@@ -12,11 +12,11 @@ export const updateTransaction = (id, data) =>
 export const deleteTransaction = (id) =>
   api.delete(`/transactions/${id}`).then((res) => res.data);
 
-export const getSummary = () =>
-  api.get("/summary").then((res) => res.data);
+export const getSummary = (month) =>
+  api.get("/summary", { params: { month } }).then((res) => res.data);
 
-export const getCategoryBreakdown = () =>
-  api.get("/summary/by-category").then((res) => res.data);
+export const getCategoryBreakdown = (month) =>
+  api.get("/summary/by-category", { params: { month } }).then((res) => res.data);
 
 export const getBudgetStatus = (month) =>
   api.get("/budgets/status", { params: { month } }).then((res) => res.data);

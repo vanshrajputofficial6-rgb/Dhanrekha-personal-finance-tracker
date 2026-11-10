@@ -1,17 +1,23 @@
 const mongoose = require("mongoose");
 const Transaction = require("../models/Transaction");
 
-// GET /api/summary
+// Builds a date range for "YYYY-MM", or null when no month is given
+const monthRange = (month) => {
+  if (!month || !/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) return null;
+  const [year, mon] = month.split("-").map(Number);
+  return { $gte: new Date(year, mon - 1, 1), $lt: new Date(year, mon, 1) };
+};
+
+// GET /api/summary?month=YYYY-MM
 const getSummary = async (req, res, next) => {
   try {
+    const match = { user: new mongoose.Types.ObjectId(req.user.id) };
+    const range = monthRange(req.query.month);
+    if (range) match.date = range;
+
     const totals = await Transaction.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(req.user.id) } },
-      {
-        $group: {
-          _id: "$type",
-          total: { $sum: "$amount" },
-        },
-      },
+      { $match: match },
+      { $group: { _id: "$type", total: { $sum: "$amount" } } },
     ]);
 
     const income = totals.find((t) => t._id === "income")?.total || 0;
@@ -27,16 +33,18 @@ const getSummary = async (req, res, next) => {
   }
 };
 
-// GET /api/summary/by-category
+// GET /api/summary/by-category?month=YYYY-MM
 const getCategoryBreakdown = async (req, res, next) => {
   try {
+    const match = {
+      type: "expense",
+      user: new mongoose.Types.ObjectId(req.user.id),
+    };
+    const range = monthRange(req.query.month);
+    if (range) match.date = range;
+
     const breakdown = await Transaction.aggregate([
-      {
-        $match: {
-          type: "expense",
-          user: new mongoose.Types.ObjectId(req.user.id),
-        },
-      },
+      { $match: match },
       {
         $group: {
           _id: "$category",
@@ -45,14 +53,7 @@ const getCategoryBreakdown = async (req, res, next) => {
         },
       },
       { $sort: { total: -1 } },
-      {
-        $project: {
-          _id: 0,
-          category: "$_id",
-          total: 1,
-          count: 1,
-        },
-      },
+      { $project: { _id: 0, category: "$_id", total: 1, count: 1 } },
     ]);
 
     res.json(breakdown);

@@ -8,6 +8,7 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
+import { useSearchParams } from "react-router-dom";
 import SummaryCard from "../components/SummaryCard";
 import BudgetProgress from "../components/BudgetProgress";
 import {
@@ -17,26 +18,53 @@ import {
   upsertBudget,
 } from "../services/transactionService";
 
-const BUDGET_CATEGORIES = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "Health", "Other"];
+const BUDGET_CATEGORIES = [
+  "Food",
+  "Transport",
+  "Shopping",
+  "Bills",
+  "Entertainment",
+  "Health",
+  "Other",
+];
 
 export default function Dashboard() {
+  const [searchParams] = useSearchParams();
+  const todayMonth = new Date().toISOString().slice(0, 7);
+  const currentMonth =
+    searchParams.get("month") || localStorage.getItem("dashboardMonth") || todayMonth;
+
   const [summary, setSummary] = useState(null);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [budgets, setBudgets] = useState([]);
   const [budgetForm, setBudgetForm] = useState({ category: "Food", limit: "" });
-  const currentMonth = new Date().toISOString().slice(0, 7);
+
+  // Remember the selected month so it survives navigation
+  useEffect(() => {
+    localStorage.setItem("dashboardMonth", currentMonth);
+  }, [currentMonth]);
+
+  const monthLabel = (() => {
+    const [y, m] = currentMonth.split("-").map(Number);
+    const name = new Date(y, m - 1, 1).toLocaleString("en-IN", {
+      month: "long",
+      year: "numeric",
+    });
+    return currentMonth === todayMonth ? `${name} (Current)` : name;
+  })();
 
   const loadBudgets = () =>
     getBudgetStatus(currentMonth).then(setBudgets).catch(() => {});
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError("");
     loadBudgets();
 
-    let cancelled = false;
-
-    Promise.all([getSummary(), getCategoryBreakdown()])
+    Promise.all([getSummary(currentMonth), getCategoryBreakdown(currentMonth)])
       .then(([summaryData, categoryData]) => {
         if (cancelled) return;
         setSummary(summaryData);
@@ -52,7 +80,7 @@ export default function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [currentMonth]);
 
   const handleBudgetSave = async (e) => {
     e.preventDefault();
@@ -71,6 +99,11 @@ export default function Dashboard() {
 
   return (
     <>
+      <div className="dashboard-header">
+        <h2>Dashboard</h2>
+        <span className="dashboard-header__month">{monthLabel}</span>
+      </div>
+
       <section className="summary-grid">
         <SummaryCard label="Total Income" value={summary.totalIncome} variant="income" />
         <SummaryCard label="Total Expenses" value={summary.totalExpenses} variant="expense" />
@@ -84,11 +117,28 @@ export default function Dashboard() {
         ) : (
           <ResponsiveContainer width="100%" height={320}>
             <BarChart data={categories}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#D1F5EE" />
-              <XAxis dataKey="category" stroke="#5B7C78" />
-              <YAxis stroke="#5B7C78" />
-              <Tooltip />
-              <Bar dataKey="total" fill="#0F766E" radius={[6, 6, 0, 0]} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+              <XAxis
+                dataKey="category"
+                stroke="var(--color-text-muted)"
+                tick={{ fill: "var(--color-text-muted)" }}
+              />
+              <YAxis
+                stroke="var(--color-text-muted)"
+                tick={{ fill: "var(--color-text-muted)" }}
+              />
+              <Tooltip
+                cursor={{ fill: "var(--color-accent)", fillOpacity: 0.35 }}
+                contentStyle={{
+                  background: "var(--color-surface)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: 8,
+                  color: "var(--color-text)",
+                }}
+                labelStyle={{ color: "var(--color-text)" }}
+                itemStyle={{ color: "var(--color-text)" }}
+              />
+              <Bar dataKey="total" fill="var(--color-primary)" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         )}
@@ -110,7 +160,9 @@ export default function Dashboard() {
               onChange={(e) => setBudgetForm({ ...budgetForm, category: e.target.value })}
             >
               {BUDGET_CATEGORIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
           </label>
