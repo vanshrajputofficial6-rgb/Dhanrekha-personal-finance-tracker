@@ -1,4 +1,4 @@
-# Personal Finance Tracker
+# धनरेखा (Dhanrekha)
 
 A full-stack MERN application for recording income and expenses, analysing spending by category, and tracking monthly budgets. It features a responsive dashboard, transaction management with filtering, and CSV export.
 

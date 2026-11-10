@@ -24,6 +24,7 @@ export default function ForgotPassword() {
 
   return (
     <form className="transaction-form auth-form" onSubmit={handleSubmit}>
+      <p className="auth-tagline">व्यक्तिगत वित्त संग्रह</p>
       <h3>Forgot password</h3>
       <label>
         Email

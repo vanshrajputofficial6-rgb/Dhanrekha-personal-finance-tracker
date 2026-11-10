@@ -32,6 +32,7 @@ export default function Login() {
 
   return (
     <form className="transaction-form auth-form" onSubmit={handleSubmit}>
+      <p className="auth-tagline">व्यक्तिगत वित्त संग्रह</p>
       <h3>{mode === "login" ? "Log in" : "Create account"}</h3>
 
       {mode === "register" && (
