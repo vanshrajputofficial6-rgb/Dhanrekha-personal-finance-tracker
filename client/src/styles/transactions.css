@@ -10,6 +10,7 @@
 
 .transaction-form h3 {
   margin: 0;
+  color: var(--color-text);
 }
 
 .transaction-form label {
@@ -20,17 +21,24 @@
 }
 
 .transaction-form input,
-.transaction-form select {
+.transaction-form select,
+.filter-bar select {
   padding: 0.55rem 0.7rem;
-  border: 1px solid #CCE7E2;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 1rem;
   color: var(--color-text);
-  background: #FFFFFF;
+  background: var(--color-surface);
+}
+
+.transaction-form input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
 }
 
 .transaction-form input:focus,
-.transaction-form select:focus {
+.transaction-form select:focus,
+.filter-bar select:focus {
   outline: 2px solid var(--color-accent);
   border-color: var(--color-primary);
 }
@@ -46,9 +54,11 @@
   gap: 0.6rem;
 }
 
-.form-actions button {
+.form-actions button,
+.budget-form button,
+.button--primary {
   background: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-on-primary);
   border: none;
   border-radius: 8px;
   padding: 0.6rem 1.25rem;
@@ -56,7 +66,9 @@
   cursor: pointer;
 }
 
-.form-actions button:hover:not(:disabled) {
+.form-actions button:hover:not(:disabled),
+.budget-form button:hover:not(:disabled),
+.button--primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
 }
 
@@ -65,11 +77,27 @@
   cursor: not-allowed;
 }
 
-.form-actions .button--ghost {
+.button--ghost {
   background: transparent;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
 }
+
+.button--ghost:hover:not(:disabled) {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.button--ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .transaction-list {
   display: grid;
   gap: 0.6rem;
@@ -98,6 +126,7 @@
 .transaction-row__info {
   display: grid;
   gap: 0.2rem;
+  color: var(--color-text);
 }
 
 .transaction-row__amount {
@@ -125,11 +154,17 @@
   cursor: pointer;
 }
 
+.transaction-row__actions .button--ghost {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+}
+
 .button--danger {
   background: var(--color-expense);
   color: #FFFFFF;
   border: none;
 }
+
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
@@ -149,62 +184,12 @@
   color: var(--color-text-muted);
 }
 
-.filter-bar select {
-  padding: 0.5rem 0.7rem;
-  border: 1px solid #CCE7E2;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  color: var(--color-text);
-  background: #FFFFFF;
-}
-@media (max-width: 640px) {
-  .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filter-bar label {
-    display: grid;
-    justify-items: stretch;
-    width: 100%;
-  }
-
-  .filter-bar select {
-    width: 100%;
-  }
-
-  .filter-bar .button--ghost {
-    align-self: flex-start;
-  }
-}
-.button--ghost {
-  background: transparent;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.button--ghost:hover:not(:disabled) {
-  background: var(--color-accent);
-}
-
-.button--ghost:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.filter-bar .button--ghost {
-  align-self: flex-end;
-}
 .export-bar {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 0.75rem;
 }
+
 .password-field {
   position: relative;
   display: flex;
@@ -225,4 +210,17 @@
   font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
+}
+
+.status-text--error {
+  color: var(--color-expense);
+}
+
+.transaction-row__info .status-text {
+  color: var(--color-text-muted);
+}
+.auth-tagline {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
 }
