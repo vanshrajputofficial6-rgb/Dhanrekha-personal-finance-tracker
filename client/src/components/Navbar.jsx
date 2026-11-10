@@ -1,5 +1,7 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { logout, isLoggedIn } from "../services/authService";
+import { isLoggedIn } from "../services/authService";
+import ProfileMenu from "./ProfileMenu";
+import ThemeToggle from "./ThemeToggle";
 import "../styles/navbar.css";
 
 export default function Navbar() {
@@ -9,25 +11,23 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <Link to="/" className="navbar__brand">
-        💰 Finance Tracker
+        💰 धनरेखा
       </Link>
       <nav className="navbar__links">
         {loggedIn && (
           <>
-            <NavLink to="/" end>Dashboard</NavLink>
-            <NavLink to="/transactions">Transactions</NavLink>
-            <button
-              type="button"
-              className="button--ghost"
-              onClick={() => {
-                logout();
-                window.location.href = "/login";
-              }}
+            <NavLink
+              to="/"
+              end
+              onClick={() => localStorage.removeItem("dashboardMonth")}
             >
-              Logout
-            </button>
+              Dashboard
+            </NavLink>
+            <NavLink to="/transactions">Transactions</NavLink>
           </>
         )}
+        <ThemeToggle />
+        {loggedIn && <ProfileMenu />}
       </nav>
     </header>
   );
