@@ -1,47 +1,131 @@
+/* ===== Stitch tokens (source) ===== */
 :root {
-  --color-primary: #0F766E;
-  --color-primary-hover: #0D6560;
-  --color-accent: #5EEAD4;
-  --color-background: #F0FDFA;
-  --color-surface: #FFFFFF;
-  --color-text: #134E4A;
-  --color-text-muted: #5B7C78;
-  --color-expense: #DC2626;
-  --color-income: #0F766E;
-  --color-border: #CCE7E2;
-  --color-on-primary: #FFFFFF;
-  --color-on-primary-border: rgba(255, 255, 255, 0.6);
-  --color-on-accent: #0F766E;
+  /* Light: Architectural Parchment */
+  --dhan-bg: #FDF9F1;
+  --dhan-surface: #FDF9F1;
+  --dhan-surface-card: #ECE8E0;
+  --dhan-surface-raised: #FFFFFF;
+  --dhan-primary: #071311;
+  --dhan-primary-hover: #1C2826;
+  --dhan-text: #1C1C17;
+  --dhan-text-muted: #424847;
+  --dhan-accent-emerald: #006B5B;
+  --dhan-accent-gold: #BD811A;
+  --dhan-outflow-crimson: #BA1A1A;
+  --dhan-border: #D9D4C7; /* not in Stitch tokens; derived from the surface scale */
+
+  --dhan-lit-bevel: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  --dhan-card-shadow: 0 12px 28px -6px rgba(28, 40, 38, 0.08), 0 4px 12px -2px rgba(28, 40, 38, 0.04);
+  --dhan-well-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  --dhan-font-display: "Noto Serif", "Noto Serif Devanagari", Georgia, serif;
+  --dhan-font-body: "Plus Jakarta Sans", -apple-system, "Segoe UI", sans-serif;
+  --dhan-font-tabular: "Inter", monospace;
+
+  /* ===== Variables used by components ===== */
+  --color-background: var(--dhan-bg);
+  --color-surface: var(--dhan-surface-raised);
+  --color-surface-muted: var(--dhan-surface-card);
+  --color-text: var(--dhan-text);
+  --color-text-muted: var(--dhan-text-muted);
+  --color-border: var(--dhan-border);
+
+  --color-primary: var(--dhan-primary);
+  --color-primary-hover: var(--dhan-primary-hover);
+  --color-accent: var(--dhan-accent-emerald);
+  --color-income: var(--dhan-accent-emerald);
+  --color-expense: var(--dhan-outflow-crimson);
+  --color-expense-tint: #FBE9E7;
+
+  --color-on-primary: #FDF9F1;
+  --color-on-primary-border: rgba(253, 249, 241, 0.35);
+  --color-on-accent: #FFFFFF;
+
+  /* Navbar tokens */
+  --nav-bg: #FDF9F1;
+  --nav-text: #1C1C17;
+  --nav-border: rgba(28, 28, 23, 0.12);
+  --nav-hover: rgba(28, 28, 23, 0.06);
+
   --radius: 12px;
-  --shadow: 0 2px 8px rgba(15, 118, 110, 0.08);
+  --shadow: var(--dhan-card-shadow);
+  --shadow-inset: var(--dhan-lit-bevel);
+
+  /* 3D depth tokens */
+  --depth-raised: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 14px 30px -10px rgba(28, 40, 38, 0.18), 0 3px 8px -2px rgba(28, 40, 38, 0.08);
+  --depth-pressed: 0 1px 2px rgba(28, 40, 38, 0.12);
+
+  /* Glass: only for profile panel */
+  --glass-bg: rgba(7, 19, 17, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 8px 24px rgba(7, 19, 17, 0.18);
 }
 
+/* ===== Dark: Deep Basalt & Brass ===== */
 :root[data-theme="dark"] {
-  --color-primary: #134E4A;
-  --color-primary-hover: #1B6B64;
-  --color-accent: #2DD4BF;
-  --color-background: #0B1F1D;
-  --color-surface: #132E2B;
-  --color-text: #E6FFFA;
-  --color-text-muted: #9FBDB8;
-  --color-expense: #F87171;
-  --color-income: #5EEAD4;
-  --color-border: #24453F;
-  --color-on-primary: #E6FFFA;
-  --color-on-primary-border: rgba(230, 255, 250, 0.5);
-  --color-on-accent: #0B1F1D;
+--page-glow:
+  radial-gradient(ellipse 60% 45% at 50% 30%, rgba(94, 234, 212, 0.14), transparent 70%),
+  radial-gradient(ellipse 90% 70% at 50% 0%, rgba(45, 212, 191, 0.06), transparent 75%),
+  radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.45) 100%);  --dhan-bg: #121413;
+  --dhan-surface: #121413;
+  --dhan-surface-card: #1A1D1B;
+  --dhan-surface-raised: #242A27;
+  --dhan-primary: #EDEDE8;
+  --dhan-primary-hover: #FFFFFF;
+  --dhan-text: #F4F0E8;
+  --dhan-text-muted: #9BA5A2;
+  --dhan-accent-emerald: #99F3DD;
+  --dhan-accent-gold: #FFDDB3;
+  --dhan-outflow-crimson: #FF897D;
+  --dhan-border: #2E3431;
+
+  --dhan-lit-bevel: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --dhan-card-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.55);
+  --dhan-well-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+
+  --color-surface-muted: var(--dhan-surface-card);
+  --color-expense-tint: rgba(255, 137, 125, 0.12);
+
+  /* In dark mode the primary is light, so button text must be dark */
+  --color-on-primary: #121413;
+  --color-on-primary-border: rgba(18, 20, 19, 0.35);
+  --color-on-accent: #121413;
+
+  /* Navbar tokens for dark mode */
+  --nav-bg: #1A1D1B;
+  --nav-text: #F4F0E8;
+  --nav-border: rgba(244, 240, 232, 0.12);
+  --nav-hover: rgba(244, 240, 232, 0.08);
+
+  /* 3D depth tokens for dark mode */
+  --depth-raised: 0 1px 0 rgba(255, 255, 255, 0.10) inset, 0 20px 40px -12px rgba(0, 0, 0, 0.7), 0 4px 10px -2px rgba(0, 0, 0, 0.4);
+  --depth-pressed: 0 1px 2px rgba(0, 0, 0, 0.5);
+
+  --glass-bg: rgba(18, 20, 19, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   color-scheme: dark;
 }
 
+/* ===== Base ===== */
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: var(--color-background);
+  font-family: var(--dhan-font-body);
   color: var(--color-text);
+  background-color: var(--color-background);
+  background-image: var(--page-glow);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: var(--dhan-font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .page-container {
@@ -55,25 +139,10 @@ body {
   .page-container {
     margin: 1.25rem auto;
   }
-
-  .navbar {
-    padding: 0.75rem 1rem;
-  }
 }
 
 /* Phone */
 @media (max-width: 640px) {
-  .navbar {
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .navbar__links {
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
   .page-container {
     padding: 0 1rem;
   }
@@ -98,5 +167,25 @@ body {
 
   .summary-card__value {
     font-size: 1.35rem;
+  }
+}
+
+/* ===== Theme switch: circular reveal from the toggle ===== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: theme-reveal 0.6s ease-in-out;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0% at var(--reveal-x, 100%) var(--reveal-y, 0%));
+  }
+  to {
+    clip-path: circle(150% at var(--reveal-x, 100%) var(--reveal-y, 0%));
   }
 }
