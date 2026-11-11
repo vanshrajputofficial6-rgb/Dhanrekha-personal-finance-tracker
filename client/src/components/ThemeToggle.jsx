@@ -25,11 +25,29 @@ export default function ThemeToggle() {
 
   const isDark = theme === "dark";
 
+  const handleToggle = (e) => {
+    const next = isDark ? "light" : "dark";
+    const root = document.documentElement;
+
+    // Start the circular reveal from the center of the button
+    const rect = e.currentTarget.getBoundingClientRect();
+    root.style.setProperty("--reveal-x", `${rect.left + rect.width / 2}px`);
+    root.style.setProperty("--reveal-y", `${rect.top + rect.height / 2}px`);
+
+    // Browsers without View Transitions switch instantly
+    if (!document.startViewTransition) {
+      setTheme(next);
+      return;
+    }
+
+    document.startViewTransition(() => setTheme(next));
+  };
+
   return (
     <button
       type="button"
       className="theme-toggle"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={handleToggle}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       title={isDark ? "Light mode" : "Dark mode"}
     >
