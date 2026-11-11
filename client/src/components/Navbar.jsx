@@ -10,9 +10,10 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
-      <Link to="/" className="navbar__brand">
-        💰 धनरेखा
-      </Link>
+     <Link to="/" className="navbar__brand">
+  <img src="/logo.png" alt="धनरेखा logo" className="navbar__logo" />
+  <span>धनरेखा</span>
+</Link>
       <nav className="navbar__links">
         {loggedIn && (
           <>
